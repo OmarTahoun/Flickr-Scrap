@@ -7,6 +7,10 @@ import fnmatch
 
 
 def flickr_walk(keyword):
+    i = 1
+    f = open("log.txt", "a")
+    photos = flickr.walk(text=keyword, tags=keyword, extras='url_c', per_page=100, sort='relevance')
+
     if not os.path.exists(folder):
         os.makedirs(folder)
     if not os.path.exists(folder+"/"+keyword):
@@ -14,10 +18,6 @@ def flickr_walk(keyword):
     path = folder+"/"+keyword+"/"
 
     count = len(fnmatch.filter(os.listdir(path), "*.jpeg"))
-
-    i = 1
-    f = open("log.txt", "a")
-    photos = flickr.walk(text=keyword, tags=keyword, extras='url_c', per_page=100, sort='relevance')
     for photo in photos:
         if i <= number:
             name =  keyword +" "+str(count)

@@ -1,4 +1,4 @@
-# Flickr-Scrap
+# Flickr-Scrape
 
 #### __A simple tool written in python that gives the user an easier access to the images on [Flickr](https://www.flickr.com/) using the [Flickr API](https://www.flickr.com/services/api/).__
 

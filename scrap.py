@@ -7,43 +7,6 @@ import argparse
 
 
 
-
-def flickr_walk(keyword):
-    i = 1
-    f = open("log.txt", "a")
-    photos = flickr.walk(text=keyword, tags=keyword, extras='url_c', per_page=100, sort='relevance')
-
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    if not os.path.exists(folder+"/"+keyword):
-        os.makedirs(folder+"/"+keyword)
-    path = folder+"/"+keyword+"/"
-
-    count = len(fnmatch.filter(os.listdir(path), "*.jpeg"))
-    for photo in photos:
-        if i <= number:
-            name =  keyword +" "+str(count)
-            filePath = path + name+".jpeg"
-
-            try:
-                url=photo.get('url_c')
-
-                if url not in urls and url != None:
-                    f.write(url+"\n")
-                    urllib.request.urlretrieve(url, filePath)
-                    print("Saving " + keyword + " "+ str(i))
-                    i += 1
-                    count += 1
-                else:
-                    continue
-
-            except Exception as e:
-                print("ERROR: " + str(e))
-        else:
-            break
-    f.close()
-
-
 def set_key_secret():
     key = input("KEY: ")
     secret = input("SECRET: ")
@@ -78,33 +41,29 @@ def check_path(location, keyword):
     return path
 
 def get_images(flickr, keyword, path, count):
-    # with open('log.json', 'r') as file:
-    #     data = file.read()
-    #     downloaded_images = json.loads(data)
+    images = flickr.walk(text=keyword, tags=keyword, extras='url_c', per_page=100, sort='relevance')
+    urls = []
 
+    for image in images:
+        if len(urls) >= count: break
+        try:
+            url = image.get('url_c')
+            if url != None:
+                urls.append(url)
+        except Exception as e:
+            print("ERROR: "+ str(e))
 
-    URLS = flickr.walk(text=keyword, tags=keyword, extras='url_c', per_page=100, sort='relevance')
-    photo_id = len(fnmatch.filter(os.listdir(path), "*.jpeg"))
-    for url in URLS:
-        if count > 0:
-            name =  keyword +" "+str(photo_id)
-            filePath = path + name+".jpeg"
+    photo_id = len(fnmatch.filter(os.listdir(path), "*.jpg"))
 
-            try:
-                image = url.get('url_c')
-
-                if image != None:
-                    urllib.request.urlretrieve(image, filePath)
-                    print("Saving " + keyword + " "+ str(photo_id))
-                    count -=1
-                    photo_id +=1
-                else:
-                    continue
-
-            except Exception as e:
-                print("ERROR: " + str(e))
-        else:
-            break
+    for url in urls:
+        photo_id += 1
+        name =  keyword +" "+str(photo_id)
+        file_path = path + name + ".jpg"
+        try:
+            urllib.request.urlretrieve(url, file_path)
+            print("Saving " + keyword + " "+ str(photo_id))
+        except Exception as e:
+            print("ERROR: " + str(e))
 
 
 def main():
